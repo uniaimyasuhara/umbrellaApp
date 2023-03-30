@@ -1,4 +1,4 @@
-package com.example.umbrella.presentation.component
+package com.example.umbrellaapp.view.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -18,14 +18,17 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.umbrellaapp.common.Week
+import com.example.umbrellaapp.view.viewmodel.SettingInfoViewModel
 
 
 @Composable
-fun getWeekList(
+fun WeekList(
     label:String,
     menuItems :List<Week>,
-    fixedOptionText:String
+    fixedOptionText:String,
+    viewModel: SettingInfoViewModel = hiltViewModel()
 ){
     val expanded = remember { mutableStateOf(false) }
     Row(
@@ -69,46 +72,82 @@ fun getWeekList(
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .fillMaxSize()
-                            .clickable { expanded.value = !expanded.value }
+                            .fillMaxWidth()
                     ) {
                         Column(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.background(
-                                color = White,
-                            )
-                            .clip(RoundedCornerShape(4.dp))
-                            .border(BorderStroke(1.dp, Color.LightGray), RoundedCornerShape(4.dp))
+                            modifier = Modifier
+                                .background(
+                                    color = White,
+                                )
+                                .clip(RoundedCornerShape(4.dp))
+                                .border(
+                                    BorderStroke(1.dp, Color.LightGray),
+                                    RoundedCornerShape(4.dp)
+                                )
                                 .fillMaxWidth()
                         ) {
                             menuItems.forEach { selectionOption ->
-                                var text by remember { mutableStateOf("") }
-
+                                val week = selectionOption.name
+                                val targetTime =
+                                    when(week){
+                                        Week.MONDAY.name -> viewModel.timeOfMonday
+                                        Week.TUESDAY.name -> viewModel.timeOfTuesday
+                                        Week.WEDNESDAY.name -> viewModel.timeOfWednesday
+                                        Week.THURSDAY.name -> viewModel.timeOfThursday
+                                        Week.FRIDAY.name -> viewModel.timeOfFriday
+                                        Week.SATURDAY.name -> viewModel.timeOfSaturday
+                                        Week.SUNDAY.name -> viewModel.timeOfSunday
+                                        else -> "00:00"
+                                    }
                                 Row(
-                                    modifier = Modifier.background(
-                                        color = White,
-                                    )
-                                        .padding(15.dp,20.dp)
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .background(
+                                            color = White,
+                                        )
+                                        .padding(15.dp, 20.dp)
                                         .fillMaxWidth()
                                 ) {
-
                                     Text(
                                         text = selectionOption.jp,
-                                        color = Color.Black
+                                        color = Color.Black,
+                                        modifier = Modifier.padding(start = 10.dp)
                                     )
                                     Spacer(modifier = Modifier.weight(1f))
                                     OutlinedTextField(
-                                        value = text,
-                                        onValueChange = { text = it },
+                                        value = targetTime,
+                                        onValueChange = {
+                                            when(week){
+                                                Week.MONDAY.name -> {
+                                                    viewModel.timeOfMonday = it
+                                                }
+                                                Week.TUESDAY.name -> {
+                                                    viewModel.timeOfTuesday = it
+                                                }
+                                                Week.WEDNESDAY.name -> {
+                                                    viewModel.timeOfWednesday = it
+                                                }
+                                                Week.THURSDAY.name -> {
+                                                    viewModel.timeOfThursday = it
+                                                }
+                                                Week.FRIDAY.name -> {
+                                                    viewModel.timeOfFriday = it
+                                                }
+                                                Week.SATURDAY.name -> {
+                                                    viewModel.timeOfSaturday = it
+                                                }
+                                                Week.SUNDAY.name -> {
+                                                    viewModel.timeOfSunday = it
+                                                }
+                                            }
+                                        },
                                         modifier =
                                         Modifier
-                                            .padding(5.dp)
                                             .width(150.dp)
-                                            .height(20.dp)
                                     )
                                 }
-
                                 Divider(modifier = Modifier.padding(horizontal = 15.dp))
                             }
                         }

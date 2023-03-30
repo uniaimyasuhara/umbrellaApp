@@ -1,4 +1,4 @@
-package com.example.umbrella.presentation.component
+package com.example.umbrellaapp.view.components
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -16,15 +16,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.umbrellaapp.common.Prefecture
+import com.example.umbrellaapp.view.viewmodel.SettingInfoViewModel
 
 @Composable
-fun getPrefectureList(
+fun PrefectureList(
     label : String,
     menuItems :List<Prefecture>,
+    viewModel: SettingInfoViewModel = hiltViewModel()
 ) {
     val expanded = remember { mutableStateOf(false) }
-    var selectedOptionText = remember { mutableStateOf(menuItems[0].jp) }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
@@ -49,7 +52,7 @@ fun getPrefectureList(
                 .padding(end = 10.dp),
         ) {
             Text(
-                text = selectedOptionText.value,
+                text =  viewModel.prefecture,
                 modifier = Modifier.padding(start = 10.dp)
             )
             Icon(
@@ -83,7 +86,7 @@ fun getPrefectureList(
                 ) {
                     menuItems.forEach { selectionOption ->
                         Column(modifier = Modifier.clickable {
-                            selectedOptionText.value = selectionOption.jp
+                            viewModel.prefecture = selectionOption.jp
                             expanded.value = false
                         }) {
                             Text(

@@ -4,8 +4,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -13,22 +11,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.umbrella.presentation.component.getPrefectureList
-import com.example.umbrella.presentation.component.getWeekList
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.umbrellaapp.R
 import com.example.umbrellaapp.common.Prefecture
 import com.example.umbrellaapp.common.Week
+import com.example.umbrellaapp.view.components.PrefectureList
+import com.example.umbrellaapp.view.components.WeekList
+import com.example.umbrellaapp.view.viewmodel.SettingInfoViewModel
 
 @Composable
-fun WeatherInfoScreen(
-//    viewModel: WeatherInfoViewModel = hiltViewModel()
+fun SettingInfoScreen(
+    viewModel: SettingInfoViewModel = hiltViewModel()
 ) {
-
-    val checked = remember {
-        mutableStateOf(true)
-    }
-
-
     Box(modifier = Modifier.fillMaxWidth()) {
         Column {
             //メニュー
@@ -59,9 +53,9 @@ fun WeatherInfoScreen(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
-                    checked = checked.value,
+                    checked = viewModel.notification,
                     modifier = Modifier.padding(end = 20.dp).scale(scale = 1.5f),
-                    onCheckedChange = { checked.value = it }
+                    onCheckedChange = { viewModel.notification = it }
                 )
             }
 
@@ -69,16 +63,17 @@ fun WeatherInfoScreen(
 
             //都道府県
             val prefectures = Prefecture.values().toList()
-            getPrefectureList(
+            PrefectureList(
                 label = "都道府県",
                 menuItems = prefectures,
+                viewModel = viewModel
             )
 
             Divider(color = Color.LightGray)
 
             //曜日→時間
             val week = Week.values().toList()
-            getWeekList(
+            WeekList(
                 label = "通知日時",
                 menuItems = week,
                 fixedOptionText = "通知日時"
@@ -125,29 +120,3 @@ fun WeatherInfoScreen(
 
     }
 }
-
-
-
-
-//    val state = viewModel.state.value
-
-//    Box(modifier = Modifier.fillMaxSize()){
-//        when{
-//            state.isLoading -> {
-//                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-//            }
-//            !state.error.isNullOrBlank() -> {
-//                Text(
-//                    text = state.error,
-//                    modifier = Modifier.align(Alignment.Center),
-//                    color = MaterialTheme.colors.error,
-//                )
-//            }
-//            else -> {
-//                state.weatherInfo?.let{ weatherInfo ->
-//                    Text(state.weatherInfo.toString())
-//
-//                }
-//            }
-//        }
-//    }
