@@ -7,7 +7,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -19,15 +18,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.umbrellaapp.common.Prefecture
 import com.example.umbrellaapp.view.viewmodel.SettingInfoViewModel
 
 @Composable
-fun PrefectureList(
+fun CitiesDialog(
     label : String,
-    menuItems :List<Prefecture>,
+    menuItems :List<Pair<String,String>>,
     viewModel: SettingInfoViewModel = hiltViewModel(),
-    locateType:String
 ) {
     val expanded = remember { mutableStateOf(false) }
 
@@ -55,7 +52,7 @@ fun PrefectureList(
                 .padding(end = 10.dp),
         ) {
             Text(
-                text =  viewModel.prefecture,
+                text =  viewModel.city,
                 modifier = Modifier.padding(start = 10.dp)
             )
             Icon(
@@ -73,7 +70,7 @@ fun PrefectureList(
                 contentAlignment = Alignment.CenterStart,
                 modifier = Modifier
                     .width(250.dp)
-                    .fillMaxHeight()
+                    .height(200.dp)
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -87,27 +84,16 @@ fun PrefectureList(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    menuItems.forEach { selectionOption ->
+                    menuItems.forEach { it ->
                         Column(modifier = Modifier.clickable {
-                            val cities = Prefecture.values()
-                                .filter { prefecture ->
-                                    prefecture.jp == viewModel.prefecture
-                                }.flatMap { prefecture ->
-                                    prefecture.cities
-                                }
-                            val prePrefecture = viewModel.prefecture
-
-                            if(prePrefecture != selectionOption.jp){
-                                viewModel.updateCity(selectionOption.cities[0].second)
-                            }
-                            viewModel.updatePrefecture(selectionOption.jp)
+                            viewModel.updateCity(it.second)
                             expanded.value = false
                         },
-                        horizontalAlignment = Alignment.CenterHorizontally, // 横方向
-                        verticalArrangement = Arrangement.Center // 縦方向
+                            horizontalAlignment = Alignment.CenterHorizontally, // 横方向
+                            verticalArrangement = Arrangement.Center // 縦方向
                         ) {
                             Text(
-                                text = selectionOption.jp,
+                                text = it.second,
                                 modifier = Modifier.padding(10.dp,20.dp),
                                 textAlign = TextAlign.Center
                             )
@@ -117,5 +103,5 @@ fun PrefectureList(
                 }
             }
         }
-        }
+    }
 }

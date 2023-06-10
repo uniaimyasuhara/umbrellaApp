@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_package = "com.example.umbrellaapp";
+option java_multiple_files = true;
+
+message SettingInfo {
+  bool notification = 1;
+  string prefecture = 2;
+  string city = 3;
+  string time_monday = 4;
+  string time_tuesday = 5;
+  string time_wednesday = 6;
+  string time_thursday = 7;
+  string time_friday = 8;
+  string time_saturday = 9;
+  string time_sunday = 10;
+}
