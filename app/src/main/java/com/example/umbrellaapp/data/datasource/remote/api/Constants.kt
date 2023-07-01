@@ -1,9 +1,6 @@
-package com.example.umbrellaapp.common
+package com.example.umbrellaapp.data.datasource.remote.api
 
-object Constants  {
-    val LOCATE_TYPE_PREFECTURE = "prefecture"
-    val LOCATE_TYPE_CITY = "city"
-
+object Constants {
     val API_KEY  = "2c1261e6a4a1f9a05170b9ee36d86778"
     val BASE_URL = "https://api.openweathermap.org/data/3.0/"
 
