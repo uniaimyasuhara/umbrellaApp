@@ -6,6 +6,8 @@ import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.umbrellaapp.common.Constants
 import com.example.umbrellaapp.common.Prefecture
+import com.example.umbrellaapp.presentation.view.components.dialog.CitiesDialog
+import com.example.umbrellaapp.presentation.view.components.dialog.PrefectureList
 import com.example.umbrellaapp.presentation.viewmodel.SettingInfoViewModel
 
 @Composable

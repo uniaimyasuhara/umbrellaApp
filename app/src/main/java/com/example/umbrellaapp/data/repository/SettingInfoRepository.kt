@@ -5,6 +5,8 @@ import com.example.umbrellaapp.MyApplication
 import com.example.umbrellaapp.SettingInfo
 import com.example.umbrellaapp.data.datasource.local.SettingInfoDataStore
 import kotlinx.coroutines.flow.first
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class SettingInfoRepository @Inject constructor(
@@ -31,10 +33,11 @@ class SettingInfoRepository @Inject constructor(
                 .setNotification(notification)
                 .build()
         }
+        commonUpdate()
     }
 
     /*
-    *　都道府県
+    * 都道府県
     */
     suspend fun setPrefecture(prefecture: String){
         settingInfoStore.updateData {currentSetting : SettingInfo ->
@@ -42,6 +45,7 @@ class SettingInfoRepository @Inject constructor(
                 .setPrefecture(prefecture)
                 .build()
         }
+        commonUpdate()
     }
 
     /*
@@ -53,6 +57,7 @@ class SettingInfoRepository @Inject constructor(
                 .setCity(city)
                 .build()
         }
+        commonUpdate()
     }
 
     /*
@@ -64,6 +69,7 @@ class SettingInfoRepository @Inject constructor(
                 .setTimeMonday(time)
                 .build()
         }
+        commonUpdate()
     }
 
     /*
@@ -75,6 +81,7 @@ class SettingInfoRepository @Inject constructor(
                 .setTimeTuesday(time)
                 .build()
         }
+        commonUpdate()
     }
 
     /*
@@ -86,6 +93,7 @@ class SettingInfoRepository @Inject constructor(
                 .setTimeWednesday(time)
                 .build()
         }
+        commonUpdate()
     }
 
     /*
@@ -97,10 +105,11 @@ class SettingInfoRepository @Inject constructor(
                 .setTimeThursday(time)
                 .build()
         }
+        commonUpdate()
     }
 
     /*
-    *　金曜日の設定時間
+    * 金曜日の設定時間
     */
     suspend fun setTimeOfFriday(time : String){
         settingInfoStore.updateData {currentSetting : SettingInfo ->
@@ -108,10 +117,11 @@ class SettingInfoRepository @Inject constructor(
                 .setTimeFriday(time)
                 .build()
         }
+        commonUpdate()
     }
 
     /*
-    *　土曜日の設定時間
+    * 土曜日の設定時間
     */
     suspend fun setTimeOfSaturday(time : String){
         settingInfoStore.updateData {currentSetting : SettingInfo ->
@@ -119,10 +129,12 @@ class SettingInfoRepository @Inject constructor(
                 .setTimeSaturday(time)
                 .build()
         }
+        commonUpdate()
+
     }
 
     /*
-    *　日曜日の設定時間
+    * 日曜日の設定時間
     */
     suspend fun setTimeOfSunday(time : String){
         settingInfoStore.updateData {currentSetting : SettingInfo ->
@@ -130,5 +142,31 @@ class SettingInfoRepository @Inject constructor(
                 .setTimeSunday(time)
                 .build()
         }
+        commonUpdate()
+    }
+
+    private suspend fun setTimeOfUpdate(){
+        val currentDateTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val formattedDateTime = currentDateTime.format(formatter)
+        settingInfoStore.updateData {currentSetting : SettingInfo ->
+            currentSetting.toBuilder()
+                .setUpdateTime(formattedDateTime)
+                .build()
+        }
+    }
+
+    private suspend fun setUpdateCount(){
+        var count = this.first().updateCount + 1
+        settingInfoStore.updateData {currentSetting : SettingInfo ->
+            currentSetting.toBuilder()
+                .setUpdateCount(count)
+                .build()
+        }
+    }
+
+    private suspend fun commonUpdate(){
+        setTimeOfUpdate()
+        setUpdateCount()
     }
 }

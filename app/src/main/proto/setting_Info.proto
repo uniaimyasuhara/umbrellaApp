@@ -14,4 +14,6 @@ message SettingInfo {
   string time_friday = 8;
   string time_saturday = 9;
   string time_sunday = 10;
+  string update_time = 11;
+  int32 update_count = 12;
 }

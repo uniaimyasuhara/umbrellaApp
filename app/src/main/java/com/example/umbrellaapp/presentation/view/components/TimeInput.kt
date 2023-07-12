@@ -9,7 +9,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import com.example.umbrellaapp.common.Week
+import com.example.umbrellaapp.domain.use_case.NotificationUseCase
 import com.example.umbrellaapp.presentation.viewmodel.SettingInfoViewModel
+import java.util.Calendar
 
 @Composable
 fun TimeInput(viewModel: SettingInfoViewModel, week: String, hour:MutableState<Int>, minute:MutableState<Int>) {
@@ -17,67 +19,73 @@ fun TimeInput(viewModel: SettingInfoViewModel, week: String, hour:MutableState<I
     var hourText by remember { mutableStateOf(hour.value.toString()) }
     var minuteText by remember { mutableStateOf(minute.value.toString()) }
     var error by remember { mutableStateOf("") }
-    var target = ""
+    var target: String
 
-//    Row(
-//        modifier = Modifier.height(60.dp)
-//    ) {
-        OutlinedTextField(
-            value = hourText,
-            onValueChange = {
-                if(it.isEmpty()){
-                    hourText = "0"
-                    target = "$hourText:$minuteText"
-                    updateTime(viewModel, week, target)
-                }else  if (it.isDigitsOnly()){
-                    val value = it.toIntOrNull() ?: 0
-                    if(hourText.length == 1 && hourText == "0"){
-                        hourText = value.toString().replace("0","")
-                    }else if (value in 0..23) {
-                        hourText = it
-                    }
-                    target = "$hourText:$minuteText"
-                    updateTime(viewModel, week, target)
+    val toDay = Calendar.getInstance()
+    val toDayOfWeek = toDay.get(Calendar.DAY_OF_WEEK)
+
+
+
+    OutlinedTextField(
+        value = hourText,
+        onValueChange = {
+            if(it.isEmpty()){
+                hourText = "0"
+                target = "$hourText:$minuteText"
+                updateTime(viewModel, week, target)
+            }else  if (it.isDigitsOnly()){
+                val value = it.toIntOrNull() ?: 0
+                if(hourText.length == 1 && hourText == "0"){
+                    hourText = value.toString().replace("0","")
+                }else if (value in 0..23) {
+                    hourText = it
                 }
+                target = "$hourText:$minuteText"
+                updateTime(viewModel, week, target)
+            }
 
-            },
-            label = { Text("時間") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.width(70.dp)
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        OutlinedTextField(
-            value = minuteText,
-            onValueChange = {
-                if(it.isEmpty()){
-                    minuteText = "0"
-                    target = "$hourText:$minuteText"
-                    updateTime(viewModel, week, target)
-                }else  if (it.isDigitsOnly()){
-                    val value = it.toIntOrNull() ?: 0
-                    if(minuteText.length == 1 && minuteText == "0"){
-                        minuteText = value.toString().replace("0","")
-                    }else if (value in 0..59) {
-                        minuteText = it
-                    }
-                    target = "$hourText:$minuteText"
-                    updateTime(viewModel, week, target)
+        },
+        label = { Text("時間") },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        modifier = Modifier.width(70.dp),
+        enabled = toDayOfWeek != Week.valueOf(week).num
+
+    )
+    Spacer(modifier = Modifier.width(10.dp))
+    OutlinedTextField(
+        value = minuteText,
+        onValueChange = {
+            if(it.isEmpty()){
+                minuteText = "0"
+                target = "$hourText:$minuteText"
+                updateTime(viewModel, week, target)
+            }else  if (it.isDigitsOnly()){
+                val value = it.toIntOrNull() ?: 0
+                if(minuteText.length == 1 && minuteText == "0"){
+                    minuteText = value.toString().replace("0","")
+                }else if (value in 0..59) {
+                    minuteText = it
                 }
-            },
-            label = { Text("分") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.width(70.dp)
-        )
+                target = "$hourText:$minuteText"
+                updateTime(viewModel, week, target)
+            }
+            val notificationUseCase = NotificationUseCase()
+            notificationUseCase.restart()
+        },
+        label = { Text("分") },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        modifier = Modifier.width(70.dp),
+        enabled = toDayOfWeek != Week.valueOf(week).num
+    )
 
-        if (error.isNotEmpty()) {
-            Text(
-                text = error,
-                color = MaterialTheme.colors.error,
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-            )
-        }
+    if (error.isNotEmpty()) {
+        Text(
+            text = error,
+            color = MaterialTheme.colors.error,
+            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+        )
     }
-//}
+}
 
 
 

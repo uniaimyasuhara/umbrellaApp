@@ -52,7 +52,6 @@ class SettingInfoViewModel @Inject constructor(
     // 通知
     fun updateNotification(value: Boolean){
         viewModelScope.launch {
-//            getWeather()
             SettingInfoRepository.setNotification(value)
             notification = value
         }

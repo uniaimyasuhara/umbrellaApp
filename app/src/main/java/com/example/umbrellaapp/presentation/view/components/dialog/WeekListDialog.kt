@@ -1,4 +1,4 @@
-package com.example.umbrellaapp.presentation.view.components
+package com.example.umbrellaapp.presentation.view.components.dialog
 
 import TimeInput
 import android.content.Context

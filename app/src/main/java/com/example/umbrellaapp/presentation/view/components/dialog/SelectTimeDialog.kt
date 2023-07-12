@@ -1,4 +1,4 @@
-package com.example.umbrellaapp.presentation.view.components
+package com.example.umbrellaapp.presentation.view.components.dialog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

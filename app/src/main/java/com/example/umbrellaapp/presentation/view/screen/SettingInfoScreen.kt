@@ -24,9 +24,10 @@ import com.example.umbrellaapp.R
 import com.example.umbrellaapp.common.Constants
 import com.example.umbrellaapp.common.Prefecture
 import com.example.umbrellaapp.common.Week
-import com.example.umbrellaapp.presentation.view.components.CitiesDialog
-import com.example.umbrellaapp.presentation.view.components.PrefectureList
-import com.example.umbrellaapp.presentation.view.components.WeekList
+import com.example.umbrellaapp.domain.use_case.NotificationUseCase
+import com.example.umbrellaapp.presentation.view.components.dialog.CitiesDialog
+import com.example.umbrellaapp.presentation.view.components.dialog.PrefectureList
+import com.example.umbrellaapp.presentation.view.components.dialog.WeekList
 import com.example.umbrellaapp.presentation.viewmodel.SettingInfoViewModel
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -68,29 +69,12 @@ fun SettingInfoScreen(
                         .scale(scale = 1.5f),
                     onCheckedChange = {
                         viewModel.updateNotification(it)
+
+                        val notificationUseCase = NotificationUseCase()
                         if(it) {
-                            val delay = 1000L
-                            val workManager = WorkManager.getInstance()
-
-                            val inputData = Data.Builder()
-                                .putBoolean("firstTime",true)
-                                .build()
-
-                            val constraints = Constraints.Builder()
-                                .setRequiredNetworkType(NetworkType.CONNECTED)
-                                .build()
-
-                            val myWorkerRequest =
-                                OneTimeWorkRequest.Builder(MyWorker::class.java)
-                                    .setConstraints(constraints)
-                                    .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                                    .setInputData(inputData)
-                                    .build()
-
-                            workManager.enqueue(myWorkerRequest)
+                            notificationUseCase.weatherNotify()
                         }else{
-                            Log.d("キャンセル","キャンセル")
-                            WorkManager.getInstance(context).cancelAllWork()
+                            notificationUseCase.cancel()
                         }
                     }
                 )

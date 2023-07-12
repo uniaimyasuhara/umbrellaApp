@@ -26,9 +26,9 @@ class WeatherUtile @Inject constructor(
             pop = getPop(isToday)
         }
         val message:String = if(pop <= 0.5){
-            "傘要らんで"
+            "傘は要らないです！"
         }else{
-            "傘要るで"
+            "傘を持っていきましょう！"
         }
 
         return  message

@@ -92,38 +92,34 @@ class MyWorker @AssistedInject constructor(
                 }
                 isToday = true
             }
-
-            // DataStoreから都道府県・市を取得
-            val settingInfo = runBlocking {
-                repository.first()
-            }
-            var prefecture = settingInfo.prefecture
-            var city = settingInfo.city
-            val prefectureData = Prefecture.values().find { it.jp == prefecture }
-            val prefectureEn = prefectureData?.name
-            val cityEn = prefectureData?.cities?.firstOrNull { it.second == city }?.first
-
-            if(prefectureEn == null || cityEn == null){
-                return Result.failure()
-            }
-
-            // 都道府県・市から緯度経度を取得
-            val location = runBlocking{
-                locationUtile.getLocation(prefecture = prefectureEn, city = cityEn)
-            }
-
-            val lat = location["lat"]?.toDouble()
-            val lon = location["lon"]?.toDouble()
-            if(lat == null || lon == null){
-                return Result.failure()
-            }
-            // 通知メッセージを取得
-            val message = runBlocking {
-                weatherUtile.getMessage(isToday,lat,lon)
-            }
-
-
             if(!firstTimeFlag) {
+                // DataStoreから都道府県・市を取得
+                val settingInfo = runBlocking {
+                    repository.first()
+                }
+                var prefecture = settingInfo.prefecture
+                var city = settingInfo.city
+                val prefectureData = Prefecture.values().find { it.jp == prefecture }
+                val prefectureEn = prefectureData?.name
+                val cityEn = prefectureData?.cities?.firstOrNull { it.second == city }?.first
+
+                if(prefectureEn == null || cityEn == null){
+                    return Result.failure()
+                }
+
+                // 都道府県・市から緯度経度を取得
+                val location = runBlocking{
+                    locationUtile.getLocation(prefecture = prefectureEn, city = cityEn)
+                }
+
+                val lat = location["lat"]?.toDouble()
+                val lon = location["lon"]?.toDouble()
+                if(lat == null || lon == null) return Result.failure()
+                // 通知メッセージを取得
+                val message = runBlocking {
+                    weatherUtile.getMessage(isToday,lat,lon)
+                }
+
                 val notification = NotificationCompat.Builder(applicationContext, id).apply {
                     setContentTitle("傘お知らせ")
                     setContentText(message)

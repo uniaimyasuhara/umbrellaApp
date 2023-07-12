@@ -1,4 +1,4 @@
-package com.example.umbrellaapp.presentation.view.components
+package com.example.umbrellaapp.presentation.view.components.dialog
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
